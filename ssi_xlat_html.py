@@ -40,8 +40,12 @@ class SSI_Class:
 		self._title = after_first
 
 	def set_presenters(self, first_word, after_first):
-		self._presenter_title = first_word
-		self._presenters = after_first
+		if first_word == 'Tour':
+			self._presenter_title = "Tour Guide"
+			self._presenters = after_first.split(' ', 1)[1].strip()
+		else:
+			self._presenter_title = first_word
+			self._presenters = after_first
 
 	def set_location(self, first_word, after_first):
 		self._location = after_first
@@ -59,7 +63,7 @@ class SSI_Class:
 		if self._title is not None:
 			ret_str += '<b>Title</b>: ' + self._title + '<br />\n'
 		if self._presenter_title is not None:
-			ret_str += '<b>' + self._presenter_title + '</b>: ' + self._presenters + '<br />\n'
+			ret_str += '<b>' + self._presenter_title[:-1] + '</b>: ' + self._presenters + '<br />\n'
 		if self._location is not None:
 			ret_str += '<b>Location</b>: ' + self._location + '<br />\n'
 		if self._description is not None:
@@ -95,15 +99,6 @@ class SSI_ClassList:
 		# 	ret_str += '</html>\n'
 		return ret_str
 
-class BadFileFormat(Exception):
-
-	def __init__(self, line_no, msg):
-		self._line_no = str(line_no)
-		self._msg = msg
-	
-	def __str__(self):
-		return 'BadFileFormat(line ' + self._line_no + '): did not find ' + self._msg + ' line.'
-
 ssi_class_attrs = {
 	# 'week':			(SSI_Class.get_week,			SSI_Class.set_week),
 	'title:':		(SSI_Class.get_title,			SSI_Class.set_title),
@@ -130,29 +125,25 @@ def main():
 	with open('schedule.txt', 'r') as sched_txt:
 		lines = sched_txt.readlines()
 
-	try:		
-		for line in lines:
-			if line[0] in '?o_-\n' or ord(line[0]) == 8212 or line.startswith('NOTES:') or line.startswith('Notes:') or line.startswith('http'):
-				continue
+	for line in lines:
+		if line[0] in '?o_-\n' or ord(line[0]) == 8212 or line.startswith('NOTES:') or line.startswith('Notes:') or line.startswith('http'):
+			continue
 
-			first_word, after_first = line.split(' ', 1)
+		first_word, after_first = line.split(' ', 1)
 
-			if first_word.lower() == 'week':
-				class_list.add(line)
-				continue
+		if first_word.lower() == 'week':
+			class_list.add(line.strip())
+			continue
 
-			try:
-				if ssi_class_attrs[first_word.lower()][0](ssi_class) is not None:
-					class_list.add(ssi_class)
-					ssi_class = SSI_Class()
-				ssi_class_attrs[first_word.lower()][1](ssi_class, first_word, after_first.strip())
-			except KeyError:
-				continue
+		try:
+			if ssi_class_attrs[first_word.lower()][0](ssi_class) is not None:
+				class_list.add(ssi_class)
+				ssi_class = SSI_Class()
+			ssi_class_attrs[first_word.lower()][1](ssi_class, first_word, after_first.strip())
+		except KeyError:
+			continue
 
-		class_list.add(ssi_class)
-				
-	except BadFileFormat as bfe:
-		print(bfe)
+	class_list.add(ssi_class)
 
 	with open('schedule.html', 'w') as html_file:
 		print(class_list, file=html_file)
