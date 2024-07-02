@@ -1,14 +1,60 @@
+import string
+
 class SSI_Class:
 
-	def __init__(self, date_time, title, presenter_title, presenters, n_presenters, location, description, bio):
-		self._date_time = date_time
-		self._title = title
-		self._presenter_title = presenter_title
-		self._presenters = presenters
-		self._n_presenters = n_presenters
-		self._location = location
-		self._description = description
-		self._bio = bio
+	def __init__(self):
+		self._week = None
+		self._date_time = None
+		self._title = None
+		self._presenter_title = None
+		self._presenters = None
+		self._n_presenters = None
+		self._location = None
+		self._description = None
+		self._bio = None
+
+	def get_week(self):
+		return self._week
+
+	def get_date_time(self):
+		return self._date_time
+
+	def get_title(self):
+		return self._title
+
+	def get_presenter(self):
+		return self._presenter_title + ' ' + self._presenter
+
+	def get_location(self):
+		return self._location
+
+	def get_description(self):
+		return self._description
+
+	def get_bio(self):
+		return self._bio
+
+	def set_week(self, first_word, after_first):
+		self._week = first_word + ' ' + after_first
+
+	def set_date_time(self, first_word, after_first):
+		self._date_time = first_word + ' ' + after_first
+
+	def set_title(self, first_word, after_first):
+		self._title = after_first
+
+	def set_presenter(self, first_word, after_first):
+		self._presenter_title = first_word
+		self._presenter = after_first
+
+	def set_location(self, first_word, after_first):
+		self._location = after_first
+
+	def set_description(self, first_word, after_first):
+		self._description = after_first
+
+	def set_bio(self, first_word, after_first):
+		self._bio = after_first
 
 	def __str__(self):
 		ret_str = ''
@@ -53,48 +99,38 @@ class BadFileFormat(Exception):
 	def __str__(self):
 		return 'BadFileFormat(line ' + self._line_no + '): did not find ' + self._msg + ' line.'
 
-def line_pair(line):
-	pair = line.split(':')
-	return (pair[0], pair[1].strip())
+ssi_class_attrs = {
+	'week':			(SSI_Class.get_week,			SSI_Class.set_week),
+	'title:':		(SSI_Class.get_title,			SSI_Class.set_title),
+	'presenter:':	(SSI_Class.get_presenter,		SSI_Class.set_presenter),
+	'presenters:':	(SSI_Class.get_presenter,		SSI_Class.set_presenter),
+	'tour':			(SSI_Class.get_presenter,		SSI_Class.set_presenter),
+	'location:':	(SSI_Class.get_location,		SSI_Class.set_location),
+	'class':		(SSI_Class.get_description,		SSI_Class.set_description),
+	'bio"':			(SSI_Class.get_bio,				SSI_Class.set_bio)
+}
 
 def main(browser):
 
+	first = True
 	class_list = SSI_ClassList(browser)
+	ssi_class = SSI_Class()
 
 	with open('schedule.txt', 'r') as sched_txt:
 		lines = sched_txt.readlines()
 
 	try:		
-		for i in range(len(lines)):
-			if lines[i].startswith('Title:'):
-				date_time = lines[i - 1]
-				title = line_pair(lines[i])[1]		# we already found Title line
+		for line in lines:
+			if line[0] in '?o_\n' or line.startswith('NOTES:'):
+				continue
+			first_word, after_first = line.split(' ', 1)
 
-				pair = line_pair(lines[i + 1])
-				if pair[0] not in ('Presenter', 'Presenters', 'Tour Guide'):
-					raise BadFileFormat(i, 'Instructor')
-				presenter_title, presenters = pair
-				if presenter_title == 'Presenters':
-					n_presenters = 2
-				else:
-					n_presenters = 1
-				
-				pair = line_pair(lines[i + 2])
-				if pair[0] != 'Location':
-					raise BadFileFormat(i, 'Location')
-				location = pair[1]
-				
-				pair = line_pair(lines[i + 3])
-				if pair[0] != 'Class description':
-					raise BadFileFormat(i, 'Description')
-				description = pair[1]
+			try:
+				ssi_class_attrs[first_word.lower()][1](ssi_class, first_word, after_first.strip())
+			except KeyError:
+				continue
 
-				if lines[i + 5].startswith('Bio:'):
-					bio = line_pair(lines[i + 5])[1]
-				else:
-					bio = None
-
-				class_list.add(SSI_Class(date_time, title, presenter_title, presenters, n_presenters, location, description, bio))
+		class_list.add(ssi_class)
 				
 	except BadFileFormat as bfe:
 		print(bfe)
@@ -103,4 +139,4 @@ def main(browser):
 		print(class_list, file=html_file)
 
 
-main(True)
+main(False)
