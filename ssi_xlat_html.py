@@ -41,7 +41,7 @@ class SSI_Class:
 
 	def set_presenters(self, first_word, after_first):
 		if first_word == 'Tour':
-			self._presenter_title = "Tour Guide"
+			self._presenter_title = "Tour Guide:"
 			self._presenters = after_first.split(' ', 1)[1].strip()
 		else:
 			self._presenter_title = first_word
@@ -107,7 +107,7 @@ ssi_class_attrs = {
 	'tour':			(SSI_Class.get_presenters,		SSI_Class.set_presenters),
 	'location:':	(SSI_Class.get_location,		SSI_Class.set_location),
 	'class':		(SSI_Class.get_description,		SSI_Class.set_description),
-	'bio"':			(SSI_Class.get_bio,				SSI_Class.set_bio),
+	'bio:':			(SSI_Class.get_bio,				SSI_Class.set_bio),
 	'monday':		(SSI_Class.get_date_time,		SSI_Class.set_date_time),
 	'tuesday':		(SSI_Class.get_date_time,		SSI_Class.set_date_time),
 	'wednesday':	(SSI_Class.get_date_time,		SSI_Class.set_date_time),
@@ -132,6 +132,8 @@ def main():
 		first_word, after_first = line.split(' ', 1)
 
 		if first_word.lower() == 'week':
+			class_list.add(ssi_class)
+			ssi_class = SSI_Class()
 			class_list.add(line.strip())
 			continue
 
