@@ -169,4 +169,6 @@ def main():
 
 	skipped_lines_file.close()
 
-main()
+# for use as Python script -- not used from Jupyter notebook
+if __name__ == '__main__':
+	main()
