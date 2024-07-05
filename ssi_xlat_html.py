@@ -52,13 +52,13 @@ class SSI_Class:
 		self._description = after_first.split(' ', 1)[1].strip()
 
 	def get_bio(self):
-		return None
+		return None			# allows us to add to list
 
 	def add_bio(self, first_word, after_first):
 		self._bios.append(after_first)
 
 	def get_extra(self):
-		return None
+		return None			# allows us to add to list
 
 	def add_extra(self, first_word, after_first):
 		self._extra.append(after_first)
@@ -107,6 +107,7 @@ class SSI_ClassList:
 				ret_str += '<hr />\n'
 		return ret_str
 
+# dictionary for routing a line to the appropriate SSI_Class attribute
 ssi_class_attrs = {
 	'title:':		(SSI_Class.get_title,			SSI_Class.set_title),
 	'presenter:':	(SSI_Class.get_presenters,		SSI_Class.set_presenters),
@@ -137,7 +138,11 @@ def main():
 	skipped_lines_file = open('skipped_lines.txt', 'w')
 
 	for line in lines:
-		if line[0] in '?o_-\n' or ord(line[0]) == 8212 or line.startswith('NOTES:') or line.startswith('Notes:') or line.startswith('http'):
+
+		# filter lines we want to skip
+		if line[0] in '?o_-\n'													\
+				or line.startswith('NOTES:') or line.startswith('Notes:')		\
+				or ord(line[0]) == 8211 or ord(line[0]) == 8212:	# en, em dash
 			print(line.strip(), file=skipped_lines_file)
 			continue
 
