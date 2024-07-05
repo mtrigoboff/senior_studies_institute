@@ -11,6 +11,7 @@ class SSI_Class:
 		self._location = None
 		self._description = None
 		self._bios = []
+		self._extra = []
 
 	def get_date_time(self):
 		return self._date_time
@@ -50,8 +51,17 @@ class SSI_Class:
 	def set_description(self, first_word, after_first):
 		self._description = after_first.split(' ', 1)[1].strip()
 
-	def add_bio(self, after_first):
+	def get_bio(self):
+		return None
+
+	def add_bio(self, first_word, after_first):
 		self._bios.append(after_first)
+
+	def get_extra(self):
+		return None
+
+	def add_extra(self, first_word, after_first):
+		self._extra.append(after_first)
 
 	def __str__(self):
 		ret_str = ''
@@ -65,9 +75,17 @@ class SSI_Class:
 			ret_str += '<b>Location</b>: ' + self._location + '<br />\n'
 		if self._description is not None:
 			ret_str += '<b>Class Description</b>: ' + self._description + '<br />\n'
+		if self._extra:
+			ret_str += '<br />\n'
+			for extra in self._extra:
+				ret_str += extra + '<br />\n'
 		if self._bios:
-			for bio in self._bios:
-				ret_str += '<b>Bio</b>: ' + bio + '<br />\n'
+			if len(self._bios) == 1:
+				ret_str += '<br /><b>Bio</b>:' + ' ' + self._bios[0] + '<br />'
+			else:
+				ret_str += '<br /><b>Bios</b>:<br />'
+				for bio in self._bios:
+					ret_str += bio + '<br /><br />\n'
 		return ret_str
 
 class SSI_ClassList:
@@ -96,6 +114,9 @@ ssi_class_attrs = {
 	'tour':			(SSI_Class.get_presenters,		SSI_Class.set_presenters),
 	'location:':	(SSI_Class.get_location,		SSI_Class.set_location),
 	'class':		(SSI_Class.get_description,		SSI_Class.set_description),
+	'extra:':		(SSI_Class.get_extra,			SSI_Class.add_extra),
+	'bio:':			(SSI_Class.get_bio,				SSI_Class.add_bio),
+	'bios:':		(SSI_Class.get_bio,				SSI_Class.add_bio),
 	'monday':		(SSI_Class.get_date_time,		SSI_Class.set_date_time),
 	'tuesday':		(SSI_Class.get_date_time,		SSI_Class.set_date_time),
 	'wednesday':	(SSI_Class.get_date_time,		SSI_Class.set_date_time),
@@ -113,8 +134,11 @@ def main():
 	with open('schedule.txt', 'r') as sched_txt:
 		lines = sched_txt.readlines()
 
+	skipped_lines_file = open('skipped_lines.txt', 'w')
+
 	for line in lines:
 		if line[0] in '?o_-\n' or ord(line[0]) == 8212 or line.startswith('NOTES:') or line.startswith('Notes:') or line.startswith('http'):
+			print(line.strip(), file=skipped_lines_file)
 			continue
 
 		first_word, after_first = line.split(' ', 1)
@@ -127,10 +151,6 @@ def main():
 			class_list.add(line.strip())
 			continue
 
-		elif first_word.lower() == 'bio:':
-			ssi_class.add_bio(after_first)
-			continue
-
 		try:
 			if ssi_class is None:
 				ssi_class = SSI_Class()
@@ -139,6 +159,7 @@ def main():
 				ssi_class = SSI_Class()
 			ssi_class_attrs[first_word.lower()][1](ssi_class, first_word, after_first)
 		except KeyError:
+			print(line.strip(), file=skipped_lines_file)
 			continue
 
 	class_list.add(ssi_class)
@@ -146,5 +167,6 @@ def main():
 	with open('schedule.html', 'w') as html_file:
 		print(class_list, file=html_file)
 
+	skipped_lines_file.close()
 
 main()
