@@ -3,27 +3,14 @@ import string
 class SSI_Class:
 
 	def __init__(self):
-		# self._date_time = None
 		self._empty = True
 		self._title = None
 		self._presenter_title = None
 		self._presenters = None
-		# self._n_presenters = None
 		self._location = None
 		self._description = None
 		self._bios = []
 		self._extra = []
-
-	# def get_date_time(self):
-	# 	return self._date_time
-
-	# def set_date_time(self, first_word, after_first):
-	# 	self._date_time = first_word + ' ' + after_first
-
-	# def is_empty(self):
-	# 	return self._title is None and self._presenter_title is None and self._presenters is None	\
-	# 		   and self._n_presenters is None and self._location is None and self._description is None \
-	# 		   and len(self._bios) == 0 and len(self._extra) == 0 
 
 	def is_empty(self):
 		return self._empty
@@ -80,8 +67,6 @@ class SSI_Class:
 
 	def __str__(self):
 		ret_str = '<hr />\n'
-		# if self._date_time is not None:
-		# 	ret_str += self._date_time + '<br />\n'
 		if self._title is not None:
 			ret_str += '<b>Title</b>: ' + self._title + '<br />\n'
 		if self._presenter_title is not None:
@@ -96,19 +81,17 @@ class SSI_Class:
 				ret_str += extra + '<br />\n'
 		if self._bios:
 			if len(self._bios) == 1:
-				ret_str += '<br /><b>Bio</b>:' + ' ' + self._bios[0]
+				ret_str += '<br /><b>Bio</b>:' + ' ' + self._bios[0] + '\n'
 			else:
-				ret_str += '<br /><b>Bios</b>:\n<br />'
+				ret_str += '<br /><b>Bios</b>:\n'
 				for bio in self._bios:
-					ret_str += bio + '<br />'
-			ret_str += '<br />\n'
+					ret_str += '<br />' + bio + '<br />\n'
 		ret_str += '<hr /><br />\n'
 		return ret_str
 
 class SSI_ClassList:
 
 	def __init__(self):
-		# self._browser = browser
 		self._class_list = []
 
 	def add(self, ssi_class):
@@ -138,20 +121,12 @@ ssi_class_attrs = {
 	'extra:':		(SSI_Class.get_extra,			SSI_Class.add_extra),
 	'bio:':			(SSI_Class.get_bio,				SSI_Class.add_bio),
 	'bios:':		(SSI_Class.get_bio,				SSI_Class.add_bio),
-	# 'monday':		(SSI_Class.get_date_time,		SSI_Class.set_date_time),
-	# 'tuesday':		(SSI_Class.get_date_time,		SSI_Class.set_date_time),
-	# 'wednesday':	(SSI_Class.get_date_time,		SSI_Class.set_date_time),
-	# 'thursday':		(SSI_Class.get_date_time,		SSI_Class.set_date_time),
-	# 'friday':		(SSI_Class.get_date_time,		SSI_Class.set_date_time),
-	# 'saturday':		(SSI_Class.get_date_time,		SSI_Class.set_date_time),
-	# 'sunday':		(SSI_Class.get_date_time,		SSI_Class.set_date_time),
 }
 
 def main():
 
 	class_list = SSI_ClassList()
 	ssi_class = SSI_Class()
-	# date_time = None
 
 	with open('schedule.txt', 'r') as sched_txt:
 		lines = sched_txt.readlines()
@@ -168,20 +143,14 @@ def main():
 			continue
 
 		first_word, after_first = line.split(' ', 1)
-		# first_word = first_word.lower()
 		after_first = after_first.strip()
 
 		if first_word.lower() in ('week', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'):
 			if not ssi_class.is_empty():
-				# ssi_class.set_date_time(date_time[0], date_time[1])
 				class_list.add(ssi_class)
 				ssi_class = SSI_Class()
 			class_list.add(line.strip())
 			continue
-
-		# elif first_word.lower() in ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'):
-		# 	date_time = (first_word, after_first)
-		# 	continue
 
 		try:
 			if ssi_class_attrs[first_word.lower()][0](ssi_class) is not None:
