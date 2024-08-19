@@ -31,7 +31,7 @@ class SSI_Class:
 	def set_presenters(self, first_word, after_first):
 		if first_word == 'Tour':
 			self._presenter_title = "Tour Guide:"
-			self._presenters = after_first.split(' ', 1)[1].strip()
+			self._presenters = after_first.split(' ', 1)[1]
 		else:
 			self._presenter_title = first_word
 			self._presenters = after_first
@@ -48,7 +48,7 @@ class SSI_Class:
 		return self._description
 
 	def set_description(self, first_word, after_first):
-		self._description = after_first.split(' ', 1)[1].strip()
+		self._description = after_first.split(' ', 1)[1]
 		self._empty = False
 
 	def get_bio(self):
@@ -123,6 +123,9 @@ ssi_class_attrs = {
 	'bios:':		(SSI_Class.get_bio,				SSI_Class.add_bio),
 }
 
+def write_skipped_line(line_no, line, skipped_lines_file):
+	print(f'{str(line_no + 1):>3s}: {line}', file=skipped_lines_file)
+
 def main():
 
 	class_list = SSI_ClassList()
@@ -133,23 +136,28 @@ def main():
 
 	skipped_lines_file = open('skipped_lines.txt', 'w')
 
+	line_no = -1					# help with debugging
 	for line in lines:
+		line_no += 1
+		line = line.strip()
 
 		# filter lines we want to skip
-		if line[0] in '?o_-\n'													\
+		if len(line) == 0														\
+				or line[0] in '?o_-\n'											\
 				or line.startswith('NOTES:') or line.startswith('Notes:')		\
+				or line[0] == '.' and len(line) == 1							\
 				or ord(line[0]) == 8211 or ord(line[0]) == 8212:	# en, em dash
-			print(line.strip(), file=skipped_lines_file)
+			write_skipped_line(line_no, line, skipped_lines_file)
 			continue
 
 		first_word, after_first = line.split(' ', 1)
-		after_first = after_first.strip()
+		after_first = after_first
 
 		if first_word.lower() in ('week', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'):
 			if not ssi_class.is_empty():
 				class_list.add(ssi_class)
 				ssi_class = SSI_Class()
-			class_list.add(line.strip())
+			class_list.add(line)
 			continue
 
 		try:
@@ -159,7 +167,7 @@ def main():
 				ssi_class = SSI_Class()
 			ssi_class_attrs[first_word.lower()][1](ssi_class, first_word, after_first)
 		except KeyError:
-			print(line.strip(), file=skipped_lines_file)
+			write_skipped_line(line_no, line, skipped_lines_file)
 			continue
 
 	class_list.add(ssi_class)
