@@ -66,7 +66,7 @@ class SSI_Class:
 		self._empty = False
 
 	def __str__(self):
-		ret_str = '<hr />\n'
+		ret_str = ''
 		if self._title is not None:
 			ret_str += '<b>Title</b>: ' + self._title + '<br />\n'
 		if self._presenter_title is not None:
@@ -86,7 +86,6 @@ class SSI_Class:
 				ret_str += '<br /><b>Bios</b>:\n'
 				for bio in self._bios:
 					ret_str += '<br />' + bio + '<br />\n'
-		ret_str += '<hr /><br />\n'
 		return ret_str
 
 class SSI_ClassList:
