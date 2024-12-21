@@ -81,12 +81,12 @@ class SSI_Class:
 				ret_str += extra + '<br />\n'
 		if self._bios:
 			if len(self._bios) == 1:
-				ret_str += '<br /><b>Bio</b>:' + ' ' + self._bios[0] + '\n'
+				ret_str += '<br /><b>Bio</b>:' + ' ' + self._bios[0] + '<br />\n'
 			else:
 				ret_str += '<br /><b>Bios</b>:\n'
 				for bio in self._bios:
 					ret_str += '<br />' + bio + '<br />\n'
-		return ret_str
+		return ret_str + '<br />\n'
 
 class SSI_ClassList:
 
