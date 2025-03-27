@@ -77,8 +77,18 @@ class SSI_Class:
 			ret_str += '<b>Class Description</b>: ' + self._description + '<br />\n'
 		if self._extra:
 			ret_str += '<br />\n'
-			for extra in self._extra:
-				ret_str += extra + '<br />\n'
+			if len(self._extra) == 1:
+				colon = self._extra[0].find(':')
+				if colon != -1:
+					title = self._extra[0][0:colon]
+					rest_of_line = self._extra[0][colon + 1:].strip()
+					ret_str += '<b>' + title + '</b>: ' + rest_of_line
+				else:
+					ret_str += self._extra[0]
+			else:
+				for extra in self._extra:
+					ret_str += extra
+			ret_str += '<br />\n'
 		if self._bios:
 			if len(self._bios) == 1:
 				ret_str += '<br /><b>Bio</b>:' + ' ' + self._bios[0] + '<br />\n'
