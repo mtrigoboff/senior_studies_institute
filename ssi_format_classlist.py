@@ -160,7 +160,6 @@ def main():
 			continue
 
 		first_word, after_first = line.split(' ', 1)
-		after_first = after_first
 
 		if first_word.lower() in ('week', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'):
 			if not ssi_class.is_empty():
@@ -169,13 +168,9 @@ def main():
 			class_list.add(line)
 			continue
 
-		try:
-			if ssi_class_attrs[first_word.lower()][0](ssi_class) is not None:
-				# ssi_class.set_date_time(date_time[0], date_time[1])
-				class_list.add(ssi_class)
-				ssi_class = SSI_Class()
+		if first_word.lower() in ssi_class_attrs:
 			ssi_class_attrs[first_word.lower()][1](ssi_class, first_word, after_first)
-		except KeyError:
+		else:
 			write_skipped_line(line_no, line, skipped_lines_file)
 			continue
 
