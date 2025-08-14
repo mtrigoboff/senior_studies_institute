@@ -15,18 +15,9 @@ class SSI_Class:
 	def is_empty(self):
 		return self._empty
 	
-	def get_title(self):
-		return self._title
-
 	def set_title(self, first_word, after_first):
 		self._title = after_first
 		self._empty = False
-
-	def get_presenters(self):
-		if self._presenter_title is None:
-			return None
-		else:
-			return self._presenter_title + ' ' + self._presenters
 
 	def set_presenters(self, first_word, after_first):
 		if first_word == 'Tour':
@@ -37,29 +28,17 @@ class SSI_Class:
 			self._presenters = after_first
 		self._empty = False
 
-	def get_location(self):
-		return self._location
-
 	def set_location(self, first_word, after_first):
 		self._location = after_first
 		self._empty = False
-
-	def get_description(self):
-		return self._description
 
 	def set_description(self, first_word, after_first):
 		self._description = after_first.split(' ', 1)[1]
 		self._empty = False
 
-	def get_bio(self):
-		return None			# allows us to add to list
-
 	def add_bio(self, first_word, after_first):
 		self._bios.append(after_first)
 		self._empty = False
-
-	def get_extra(self):
-		return None			# allows us to add to list
 
 	def add_extra(self, first_word, after_first):
 		self._extra.append(after_first)
@@ -121,15 +100,15 @@ class SSI_ClassList:
 
 # dictionary for routing a line to the appropriate SSI_Class attribute
 ssi_class_attrs = {
-	'title:':		(SSI_Class.get_title,			SSI_Class.set_title),
-	'presenter:':	(SSI_Class.get_presenters,		SSI_Class.set_presenters),
-	'presenters:':	(SSI_Class.get_presenters,		SSI_Class.set_presenters),
-	'tour':			(SSI_Class.get_presenters,		SSI_Class.set_presenters),
-	'location:':	(SSI_Class.get_location,		SSI_Class.set_location),
-	'class':		(SSI_Class.get_description,		SSI_Class.set_description),
-	'extra:':		(SSI_Class.get_extra,			SSI_Class.add_extra),
-	'bio:':			(SSI_Class.get_bio,				SSI_Class.add_bio),
-	'bios:':		(SSI_Class.get_bio,				SSI_Class.add_bio),
+	'title:':		SSI_Class.set_title,
+	'presenter:':	SSI_Class.set_presenters,
+	'presenters:':	SSI_Class.set_presenters,
+	'tour':			SSI_Class.set_presenters,
+	'location:':	SSI_Class.set_location,
+	'class':		SSI_Class.set_description,
+	'extra:':		SSI_Class.add_extra,
+	'bio:':			SSI_Class.add_bio,
+	'bios:':		SSI_Class.add_bio,
 }
 
 def write_skipped_line(line_no, line, skipped_lines_file):
@@ -169,7 +148,7 @@ def main():
 			continue
 
 		if first_word.lower() in ssi_class_attrs:
-			ssi_class_attrs[first_word.lower()][1](ssi_class, first_word, after_first)
+			ssi_class_attrs[first_word.lower()](ssi_class, first_word, after_first)
 		else:
 			write_skipped_line(line_no, line, skipped_lines_file)
 			continue
