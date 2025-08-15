@@ -1,4 +1,4 @@
-import string
+import os.path as op, string, sys
 
 class SSI_Class:
 
@@ -114,12 +114,14 @@ ssi_class_attrs = {
 def write_skipped_line(line_no, line, skipped_lines_file):
 	print(f'{str(line_no + 1):>3s}: {line}', file=skipped_lines_file)
 
-def main():
+def main(input_file_name):
+
+	input_file_basename = op.splitext(op.basename(input_file_name))[0]
 
 	class_list = SSI_ClassList()
 	ssi_class = SSI_Class()
 
-	with open('schedule.txt', 'r') as sched_txt:
+	with open(input_file_name, 'r') as sched_txt:
 		lines = sched_txt.readlines()
 
 	skipped_lines_file = open('skipped_lines.txt', 'w')
@@ -155,11 +157,14 @@ def main():
 
 	class_list.add(ssi_class)
 
-	with open('schedule.html', 'w') as html_file:
+	with open(input_file_basename + '.html', 'w') as html_file:
 		print(class_list, file=html_file)
 
 	skipped_lines_file.close()
 
-# for use as Python script -- not used from Jupyter notebook
+# for use as a Python script -- not used from Jupyter notebook
 if __name__ == '__main__':
-	main()
+	if len(sys.argv) == 2:
+		main(sys.argv[1])
+	else:
+		main('schedule.txt')
