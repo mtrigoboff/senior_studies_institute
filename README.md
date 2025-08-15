@@ -1,5 +1,4 @@
-# Schedule Translator
-## Senior Studies Institute
+## Senior Studies Institute Schedule Translator
 
 This code takes as input a text file saved from a SSI term schedule Word document and produces an HTML version formatted similarly to the original Word document.
 
