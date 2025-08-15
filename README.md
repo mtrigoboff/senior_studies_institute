@@ -1,6 +1,6 @@
 # Schedule Translator
 ## Senior Studies Institute
 
-This code takes as input a text file saved from a SSI term schedule Word document and produces a HTML version formatted similarly to the original Word document.
+This code takes as input a text file saved from a SSI term schedule Word document and produces an HTML version formatted similarly to the original Word document.
 
-It can be used directly buy run it in a Python interpreter, or by using it via this Jupyter Notebook.
+It can be used directly by running it in a Python interpreter, or by using it via this Jupyter Notebook.
