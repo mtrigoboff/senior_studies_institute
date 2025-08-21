@@ -114,7 +114,7 @@ ssi_class_attrs = {
 def write_skipped_line(line_no, line, skipped_lines_file):
 	print(f'{str(line_no + 1):>3s}: {line}', file=skipped_lines_file)
 
-def ssi_schedule_translator(input_file_name):
+def main(input_file_name):
 
 	input_file_basename = op.splitext(op.basename(input_file_name))[0]
 
@@ -165,6 +165,6 @@ def ssi_schedule_translator(input_file_name):
 # for use as a Python script -- not used from Jupyter notebook
 if __name__ == '__main__':
 	if len(sys.argv) == 2:
-		ssi_schedule_translator(sys.argv[1])
+		main(sys.argv[1])
 	else:
-		ssi_schedule_translator('schedule.txt')
+		main('schedule.txt')
