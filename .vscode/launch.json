@@ -8,14 +8,14 @@
 			"name": "no args",
 			"type": "debugpy",
 			"request": "launch",
-			"program": "${workspaceFolder}/ssi_schedule_translator.py",
+			"program": "${workspaceFolder}/html_translator.py",
 			"console": "integratedTerminal"
 		},
 		{
 			"name": "sys.argv",
 			"type": "debugpy",
 			"request": "launch",
-			"program": "${workspaceFolder}/ssi_schedule_translator.py",
+			"program": "${workspaceFolder}/html_translator.py",
 			"console": "integratedTerminal",
 			"args": ["schedule.txt"]
 		}

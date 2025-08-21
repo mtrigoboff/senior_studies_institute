@@ -23,6 +23,9 @@ class SSI_Class:
 		if first_word == 'Tour':
 			self._presenter_title = "Tour Guide:"
 			self._presenters = after_first.split(' ', 1)[1]
+		elif first_word == 'Moderator':
+			self._presenter_title = "Moderator:"
+			self._presenters = after_first
 		else:
 			self._presenter_title = first_word
 			self._presenters = after_first
@@ -101,6 +104,7 @@ class SSI_ClassList:
 # dictionary for routing a line to the appropriate SSI_Class attribute
 ssi_class_attrs = {
 	'title:':		SSI_Class.set_title,
+	'moderator:':	SSI_Class.set_presenters,
 	'presenter:':	SSI_Class.set_presenters,
 	'presenters:':	SSI_Class.set_presenters,
 	'tour':			SSI_Class.set_presenters,
