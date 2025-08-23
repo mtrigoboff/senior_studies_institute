@@ -120,7 +120,9 @@ def write_skipped_line(line_no, line, skipped_lines_file):
 
 def translate(input_file_name):
 
-	input_file_basename = op.splitext(op.basename(input_file_name))[0]
+	basename = op.splitext(op.basename(input_file_name))[0]
+	html_file_name = basename + '.html'
+	skipped_lines_file_name = basename + '.skipped_lines.txt'
 
 	class_list = SSI_ClassList()
 	ssi_class = SSI_Class()
@@ -128,7 +130,7 @@ def translate(input_file_name):
 	with open(input_file_name, 'r') as sched_txt:
 		lines = sched_txt.readlines()
 
-	skipped_lines_file = open(input_file_basename + '.skipped_lines.txt', 'w')
+	skipped_lines_file = open(skipped_lines_file_name, 'w')
 
 	line_no = -1					# help with debugging
 	for line in lines:
@@ -161,10 +163,12 @@ def translate(input_file_name):
 
 	class_list.add(ssi_class)
 
-	with open(input_file_basename + '.html', 'w') as html_file:
+	with open(html_file_name, 'w') as html_file:
 		print(class_list, file=html_file)
 
 	skipped_lines_file.close()
+
+	return (html_file_name, skipped_lines_file_name)
 
 # for use as a Python script -- not used from Jupyter notebook
 if __name__ == '__main__':
