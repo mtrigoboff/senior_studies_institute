@@ -18,6 +18,14 @@
 			"program": "${workspaceFolder}/html_translator.py",
 			"console": "integratedTerminal",
 			"args": ["schedule.txt"]
+		},
+		{
+			"name": "pickArgs",
+			"type": "debugpy",
+			"request": "launch",
+			"program": "${workspaceFolder}/html_translator.py",
+			"console": "integratedTerminal",
+			"args": ["${command:pickArgs}"]
 		}
 	]
 }
